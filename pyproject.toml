@@ -1,0 +1,83 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "gpt-unit-tester-ts"
+dynamic = ["version"]
+description = 'Analyzes TypeScript files and their imports to generate useful context for LLMs to create unit tests.'
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+keywords = []
+authors = [
+  { name = "mhh", email = "mike.hukiewitz@robotter.ai" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = [
+  "requests",
+]
+
+[project.urls]
+Documentation = "https://github.com/unknown/gpt-unit-tester-ts#readme"
+Issues = "https://github.com/unknown/gpt-unit-tester-ts/issues"
+Source = "https://github.com/unknown/gpt-unit-tester-ts"
+
+[tool.hatch.version]
+path = "src/gpt_unit_tester_ts/__about__.py"
+
+[tool.hatch.envs.default]
+dependencies = [
+  "coverage[toml]>=6.5",
+  "pytest",
+]
+[tool.hatch.envs.default.scripts]
+test = "pytest {args:tests}"
+test-cov = "coverage run -m pytest {args:tests}"
+cov-report = [
+  "- coverage combine",
+  "coverage report",
+]
+cov = [
+  "test-cov",
+  "cov-report",
+]
+
+[[tool.hatch.envs.all.matrix]]
+python = ["3.8", "3.9", "3.10", "3.11", "3.12"]
+
+[tool.hatch.envs.types]
+dependencies = [
+  "mypy>=1.0.0",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/gpt_unit_tester_ts tests}"
+
+[tool.coverage.run]
+source_pkgs = ["gpt_unit_tester_ts", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/gpt_unit_tester_ts/__about__.py",
+]
+
+[tool.coverage.paths]
+gpt_unit_tester_ts = ["src/gpt_unit_tester_ts", "*/gpt-unit-tester-ts/src/gpt_unit_tester_ts"]
+tests = ["tests", "*/gpt-unit-tester-ts/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
